@@ -1,0 +1,19 @@
+MindEase - Manual Test Cases
+Format: ID | Test | Input | Expected | Observed (Pass/Fail)
+
+TC01 | Mood check-in, valid | mood = 3, note = "tired" | Entry saved and shown in history | 
+TC02 | Mood check-in, blank note | mood = 4, note empty | Entry saved without note | 
+TC03 | Mood check-in, invalid mood | mood = 9 or letters | Error message, asked again | 
+TC04 | Mood history order | add 3 entries | Entries shown in correct order | 
+TC05 | Undo last action | add entry, choose undo | Last entry removed (LIFO) | 
+TC06 | Undo on empty stack | choose undo with no entries | "Nothing to undo" message | 
+TC07 | Reminder queue | add reminder A, then B | A comes out first (FIFO) | 
+TC08 | Resource lookup, known category | category = "stress" | Suggested activities listed | 
+TC09 | Resource lookup, unknown category | category = "xyz" | "Category not found" message | 
+TC10 | Doctor login, valid | demo credentials | Doctor menu opens | 
+TC11 | Doctor login, invalid | wrong password | Login rejected | 
+TC12 | Sharing off | student has sharing off | Doctor cannot see records | 
+TC13 | Sharing on / revoked | turn on, then off | Doctor sees records only while on | 
+TC14 | Save and reload | add entries, exit, run again | Entries still present | 
+TC15 | Missing data file | delete data file, run | Program starts without crashing | 
+TC16 | Wrong menu choice | enter 99 or text | Error message, menu shown again | 
