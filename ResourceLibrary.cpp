@@ -2,21 +2,14 @@
 #include <iostream>
 using namespace std;
 
-ResourceLibrary::ResourceLibrary()
-{
-    for (int i = 0; i < SIZE; i++)
-    {
-        table[i] = nullptr;
-    }
+ResourceLibrary::ResourceLibrary() {
+    for (int i = 0; i < SIZE; i++) table[i] = nullptr;
 }
 
-ResourceLibrary::~ResourceLibrary()
-{
-    for (int i = 0; i < SIZE; i++)
-    {
+ResourceLibrary::~ResourceLibrary() {
+    for (int i = 0; i < SIZE; i++) {
         CategoryNode* cur = table[i];
-        while (cur != nullptr)
-        {
+        while (cur != nullptr) {
             CategoryNode* temp = cur;
             cur = cur->next;
             delete temp;
@@ -24,43 +17,32 @@ ResourceLibrary::~ResourceLibrary()
     }
 }
 
-string ResourceLibrary::toLower(string s) const
-{
+string ResourceLibrary::toLower(string s) const {
     for (size_t i = 0; i < s.size(); i++)
-    {
-        if (s[i] >= 'A' && s[i] <= 'Z')
-        {
-            s[i] = s[i] + 32;
-        }
-    }
+        if (s[i] >= 'A' && s[i] <= 'Z') s[i] = s[i] + 32;
     return s;
 }
 
-int ResourceLibrary::hashFunc(const string& key) const
-{
+int ResourceLibrary::hashFunc(const string& key) const {
     unsigned long h = 0;
     for (size_t i = 0; i < key.size(); i++)
-    {
         h = h * 31 + key[i];
-    }
     return h % SIZE;
 }
 
-void ResourceLibrary::insertCategory(const string& category, const vector<string>& tips)
-{
+void ResourceLibrary::insertCategory(const string& category, const vector<string>& tips) {
     string key = toLower(category);
     int idx = hashFunc(key);
 
     CategoryNode* node = new CategoryNode;
     node->category = key;
     node->tips = tips;
-    node->next = table[idx];    
+    node->next = table[idx];    // chain at the front of the bucket
     table[idx] = node;
 }
 
-
-void ResourceLibrary::loadDefaults()
-{
+// predefined general self-care content, nothing medical
+void ResourceLibrary::loadDefaults() {
     insertCategory("stress", {
         "Take 5 slow breaths: in for 4 counts, out for 6.",
         "Break big tasks into small steps and do one at a time.",
@@ -88,38 +70,27 @@ void ResourceLibrary::loadDefaults()
     });
 }
 
-bool ResourceLibrary::showCategory(const string& category) const
-{
+bool ResourceLibrary::showCategory(const string& category) const {
     string key = toLower(category);
     int idx = hashFunc(key);
 
-    for (CategoryNode* p = table[idx]; p != nullptr; p = p->next)
-    {
-        if (p->category == key)
-        {
+    for (CategoryNode* p = table[idx]; p != nullptr; p = p->next) {
+        if (p->category == key) {
             cout << "\nTips for " << p->category << ":\n";
             for (size_t i = 0; i < p->tips.size(); i++)
-            {
                 cout << " - " << p->tips[i] << "\n";
-            }
             return true;
         }
     }
-    return false; 
+    return false;   // category not found
 }
 
-void ResourceLibrary::showAllCategories() const
-{
+void ResourceLibrary::showAllCategories() const {
     cout << "Available categories: ";
     bool first = true;
-    for (int i = 0; i < SIZE; i++)
-    {
-        for (CategoryNode* p = table[i]; p != nullptr; p = p->next)
-        {
-            if (!first)
-            {
-                cout << ", ";
-            }
+    for (int i = 0; i < SIZE; i++) {
+        for (CategoryNode* p = table[i]; p != nullptr; p = p->next) {
+            if (!first) cout << ", ";
             cout << p->category;
             first = false;
         }

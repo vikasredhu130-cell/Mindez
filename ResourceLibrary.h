@@ -5,15 +5,14 @@
 #include <vector>
 using namespace std;
 
-struct CategoryNode
-{
+// Hash table with chaining: category name -> list of tips
+struct CategoryNode {
     string category;
     vector<string> tips;
     CategoryNode* next;
 };
 
-class ResourceLibrary
-{
+class ResourceLibrary {
 private:
     static const int SIZE = 7;
     CategoryNode* table[SIZE];

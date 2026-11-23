@@ -1,151 +1,80 @@
 #include "MoodEntry.h"
-#include "Utils.h"
 #include <iostream>
 using namespace std;
-using namespace mindease;
 
-MoodList::MoodList()
-{
+MoodList::MoodList() {
     head = nullptr;
     tail = nullptr;
     count = 0;
 }
 
-MoodList::~MoodList()
-{
+MoodList::~MoodList() {
     MoodEntry* cur = head;
-    while (cur != nullptr)
-    {
+    while (cur != nullptr) {
         MoodEntry* temp = cur;
         cur = cur->next;
         delete temp;
     }
 }
 
-string MoodList::moodName(int m)
-{
-    switch (m)
-    {
-    case 1:
-        return "Very Low";
-    case 2:
-        return "Low";
-    case 3:
-        return "Okay";
-    case 4:
-        return "Good";
-    case 5:
-        return "Great";
+string MoodList::moodName(int m) {
+    switch (m) {
+        case 1: return "Very Low";
+        case 2: return "Low";
+        case 3: return "Okay";
+        case 4: return "Good";
+        case 5: return "Great";
     }
     return "Unknown";
 }
 
-void MoodList::addEntry(const string& date, int mood, const string& note)
-{
+// insert at the end so history stays oldest -> newest
+MoodEntry* MoodList::addEntry(const string& date, int mood, const string& note) {
     MoodEntry* node = new MoodEntry(date, mood, note);
-    if (head == nullptr)
-    {
-        head = node;
-        tail = node;
-    }
-    else
-    {
+    if (head == nullptr) {
+        head = tail = node;
+    } else {
         tail->next = node;
         tail = node;
     }
     count++;
+    return node;
 }
 
-void MoodList::addEntry(int mood, const string& note)
-{
-    addEntry(currentTime(), mood, note);
-}
+bool MoodList::removeEntry(MoodEntry* target) {
+    MoodEntry* prev = nullptr;
+    MoodEntry* cur = head;
 
-void MoodList::addEntry(int mood)
-{
-    addEntry(currentTime(), mood, "");
-}
+    while (cur != nullptr && cur != target) {
+        prev = cur;
+        cur = cur->next;
+    }
+    if (cur == nullptr) return false;   // not found
 
-bool MoodList::removeLast()
-{
-    if (head == nullptr)
-    {
-        return false;
-    }
-    if (head == tail)
-    {
-        delete head;
-        head = nullptr;
-        tail = nullptr;
-    }
-    else
-    {
-        MoodEntry* p = head;
-        while (p->next != tail)
-        {
-            p = p->next;
-        }
-        delete tail;
-        tail = p;
-        tail->next = nullptr;
-    }
+    if (prev == nullptr) head = cur->next;
+    else prev->next = cur->next;
+
+    if (cur == tail) tail = prev;
+
+    delete cur;
     count--;
     return true;
 }
 
-MoodEntry* MoodList::getHead() const
-{
-    return head;
-}
+MoodEntry* MoodList::getLast() const { return tail; }
+MoodEntry* MoodList::getHead() const { return head; }
+int MoodList::size() const { return count; }
 
-int MoodList::size() const
-{
-    return count;
-}
-
-void MoodList::display() const
-{
-    if (head == nullptr)
-    {
+void MoodList::display() const {
+    if (head == nullptr) {
         cout << "No mood entries yet.\n";
         return;
     }
     int i = 1;
-    for (MoodEntry* p = head; p != nullptr; p = p->next)
-    {
-        cout << i << ". " << p->date << " | " << moodName(p->mood)
+    for (MoodEntry* p = head; p != nullptr; p = p->next) {
+        cout << i++ << ". " << p->date << " | " << moodName(p->mood)
              << " (" << p->mood << "/5)\n";
-        if (!p->note.empty())
-        {
-            cout << "   Note: " << p->note << "\n";
-        }
-        i++;
+        if (!p->note.empty())    cout << "   Note: " << p->note << "\n";
+        if (!p->journal.empty()) cout << "   Journal: " << p->journal << "\n";
     }
-}
-
-int MoodList::copyMoods(int arr[]) const
-{
-    int n = 0;
-    for (MoodEntry* p = head; p != nullptr && n < MAX_MOODS; p = p->next)
-    {
-        arr[n] = p->mood;
-        n++;
-    }
-    return n;
-}
-
-void showSummary(const MoodList& list)
-{
-    if (list.count == 0)
-    {
-        cout << "No entries to summarise.\n";
-        return;
-    }
-    int total = 0;
-    for (MoodEntry* p = list.head; p != nullptr; p = p->next)
-    {
-        total += p->mood;
-    }
-    cout << "Total entries: " << list.count << "\n";
-    cout << "Average mood: " << (double)total / list.count << " / 5\n";
 }

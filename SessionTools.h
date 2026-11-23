@@ -2,39 +2,42 @@
 #define SESSIONTOOLS_H
 
 #include <string>
+#include "MoodEntry.h"
 using namespace std;
 
-const int MAX_UNDO = 50;
+// ---------- Stack: undo the last local action ----------
 const int ACTION_MOOD_ADDED = 1;
 const int ACTION_JOURNAL_ADDED = 2;
 
-class UndoStack
-{
-private:
-    int items[MAX_UNDO];
-    int top;
+struct Action {
+    int type;
+    MoodEntry* entry;       // entry the action was done on
+    string oldJournal;      // journal text before the change
+    Action* next;
+};
 
+class UndoStack {
+private:
+    Action* top;
 public:
     UndoStack();
-    bool push(int action);
-    bool pop(int& action);
+    ~UndoStack();
+    void push(int type, MoodEntry* entry, const string& oldJournal = "");
+    bool pop(Action& out);
     bool isEmpty() const;
 };
 
-
-struct Reminder
-{
+// ---------- Queue: reminders waiting for this session ----------
+struct Reminder {
     string text;
     Reminder* next;
 };
 
-class ReminderQueue
-{
+class ReminderQueue {
 private:
     Reminder* front;
     Reminder* rear;
     int count;
-
 public:
     ReminderQueue();
     ~ReminderQueue();

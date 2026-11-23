@@ -1,21 +1,7 @@
-﻿# MindEase
+# MindEase API (demo)
 
-A C++ console prototype for student mental-health self-management, built to show data structures through real features.
+Run `npm install` then `npm start`. API listens on port 4000.
 
-Team PICTURE: Anukul Ojha, Anuraj Singh Gusain, Vikas
+Endpoints: `GET /api/health`, `GET/POST /api/moods`, `GET/PUT /api/consent`, `GET/POST /api/feedback`.
 
-## Data structure mapping
-- Mood history: singly linked list (MoodList)
-- Undo: stack (UndoStack)
-- Reminders: queue (ReminderQueue)
-- Self-care resources: hash table with chaining (ResourceLibrary)
-- Saving records: file handling (Storage)
-
-## Build and run (PowerShell)
-g++ -std=c++11 -Wall -Wextra main.cpp MoodEntry.cpp SessionTools.cpp ResourceLibrary.cpp Storage.cpp -o MindEase.exe
-.\MindEase.exe
-
-All .cpp files must be compiled together, otherwise the linker gives undefined-reference errors.
-
-## Note
-This is an educational prototype. It does not diagnose or treat any condition. Doctor login uses demo credentials only and is not secure. Records are stored in plain local text files.
+This is an in-memory demo API. It is not production-ready and does not provide real authentication, encryption, persistent storage, or clinical services.

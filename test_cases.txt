@@ -1,19 +1,22 @@
-MindEase - Manual Test Cases
-Format: ID | Test | Input | Expected | Observed (Pass/Fail)
+MindEase prototype test checklist
 
-TC01 | Mood check-in, valid | mood = 3, note = "tired" | Entry saved and shown in history | 
-TC02 | Mood check-in, blank note | mood = 4, note empty | Entry saved without note | 
-TC03 | Mood check-in, invalid mood | mood = 9 or letters | Error message, asked again | 
-TC04 | Mood history order | add 3 entries | Entries shown in correct order | 
-TC05 | Undo last action | add entry, choose undo | Last entry removed (LIFO) | 
-TC06 | Undo on empty stack | choose undo with no entries | "Nothing to undo" message | 
-TC07 | Reminder queue | add reminder A, then B | A comes out first (FIFO) | 
-TC08 | Resource lookup, known category | category = "stress" | Suggested activities listed | 
-TC09 | Resource lookup, unknown category | category = "xyz" | "Category not found" message | 
-TC10 | Doctor login, valid | demo credentials | Doctor menu opens | 
-TC11 | Doctor login, invalid | wrong password | Login rejected | 
-TC12 | Sharing off | student has sharing off | Doctor cannot see records | 
-TC13 | Sharing on / revoked | turn on, then off | Doctor sees records only while on | 
-TC14 | Save and reload | add entries, exit, run again | Entries still present | 
-TC15 | Missing data file | delete data file, run | Program starts without crashing | 
-TC16 | Wrong menu choice | enter 99 or text | Error message, menu shown again | 
+1. Start fresh: application should create/ask for student profile and load no records.
+2. Student mood check-in: add mood 4 and verify it appears in mood history.
+3. Invalid mood: enter 9, abc, then 3; app should reprompt and accept 3.
+4. Journal without mood: should ask student to create a mood entry first.
+5. Add journal: add text to latest mood and verify it appears in history.
+6. Undo journal: undo should restore previous journal text.
+7. Undo mood: add mood, undo, and verify it is removed.
+8. Reminder FIFO: add A then B; show next should return A.
+9. Resource lookup: stress and STRESS should both find tips.
+10. Unknown resource: xyz should report no resources found.
+11. Doctor login wrong password: access should be rejected.
+12. Doctor login correct password but consent OFF: doctor records should remain blocked.
+13. Student enables doctor consent; doctor can view mood history.
+14. Doctor analytics: entry count and average should match entered moods.
+15. Doctor journal review: only non-empty shared journal entries should display.
+16. Doctor feedback: feedback should save and appear in student feedback page.
+17. Student revokes consent; doctor should no longer see records.
+18. Save and restart: mood entries and profile should reload.
+
+Fill the Observed column/results after manually running each test.

@@ -2,106 +2,81 @@
 #include <iostream>
 using namespace std;
 
+// ---- UndoStack ----
+UndoStack::UndoStack() { top = nullptr; }
 
-UndoStack::UndoStack()
-{
-    top = -1;
+UndoStack::~UndoStack() {
+    while (top != nullptr) {
+        Action* temp = top;
+        top = top->next;
+        delete temp;
+    }
 }
 
-bool UndoStack::push(int action)
-{
-    if (top == MAX_UNDO - 1)
-    {
-        return false;
-    }
-    top++;
-    items[top] = action;
+void UndoStack::push(int type, MoodEntry* entry, const string& oldJournal) {
+    Action* a = new Action;
+    a->type = type;
+    a->entry = entry;
+    a->oldJournal = oldJournal;
+    a->next = top;
+    top = a;
+}
+
+bool UndoStack::pop(Action& out) {
+    if (top == nullptr) return false;
+    Action* temp = top;
+    out.type = temp->type;
+    out.entry = temp->entry;
+    out.oldJournal = temp->oldJournal;
+    top = top->next;
+    delete temp;
     return true;
 }
 
-bool UndoStack::pop(int& action)
-{
-    if (top == -1)
-    {
-        return false;
-    }
-    action = items[top];
-    top--;
-    return true;
-}
+bool UndoStack::isEmpty() const { return top == nullptr; }
 
-bool UndoStack::isEmpty() const
-{
-    return top == -1;
-}
-
-ReminderQueue::ReminderQueue()
-{
-    front = nullptr;
-    rear = nullptr;
+// ---- ReminderQueue ----
+ReminderQueue::ReminderQueue() {
+    front = rear = nullptr;
     count = 0;
 }
 
-ReminderQueue::~ReminderQueue()
-{
+ReminderQueue::~ReminderQueue() {
     string dummy;
-    while (dequeue(dummy))
-    {
-    }
+    while (dequeue(dummy)) {}
 }
 
-void ReminderQueue::enqueue(const string& text)
-{
+void ReminderQueue::enqueue(const string& text) {
     Reminder* r = new Reminder;
     r->text = text;
     r->next = nullptr;
-    if (rear == nullptr)
-    {
-        front = r;
-        rear = r;
-    }
-    else
-    {
+    if (rear == nullptr) front = rear = r;
+    else {
         rear->next = r;
         rear = r;
     }
     count++;
 }
 
-bool ReminderQueue::dequeue(string& out)
-{
-    if (front == nullptr)
-    {
-        return false;
-    }
+bool ReminderQueue::dequeue(string& out) {
+    if (front == nullptr) return false;
     Reminder* temp = front;
     out = temp->text;
     front = front->next;
-    if (front == nullptr)
-    {
-        rear = nullptr;
-    }
+    if (front == nullptr) rear = nullptr;
     delete temp;
     count--;
     return true;
 }
 
-bool ReminderQueue::isEmpty() const
-{
-    return front == nullptr;
-}
+bool ReminderQueue::isEmpty() const { return front == nullptr; }
 
-void ReminderQueue::display() const
-{
-    if (front == nullptr)
-    {
+void ReminderQueue::display() const {
+    if (front == nullptr) {
         cout << "No pending reminders.\n";
         return;
     }
     int i = 1;
     for (Reminder* p = front; p != nullptr; p = p->next)
-    {
-        cout << i << ". " << p->text << "\n";
-        i++;
-    }
+        cout << i++ << ". " << p->text << "\n";
 }
